@@ -123,10 +123,32 @@ public class Game
 {
     static void Main(string[] args)
     {
+        Game game = new Game();
         Board board = new Board();
         displayBoard(board.grid);
-        int currentTurn = 0;
-        getTurn(currentTurn);
+        int turns = 0;
+        for (int i=0; turns < 30; i++)
+        {
+            //int currentTurn = 0;
+            getTurn(turns);
+            Console.WriteLine("Enter your Position: ");
+            string userposition = Console.ReadLine().ToUpper();
+            char direction = userposition[0];
+
+            // Assuming turn 0 is for Player1 and turn 1 is for Player2
+            if (turns % 2 == 0)
+            {
+                // Player1's turn
+                game.Player1.Move(direction);
+            }
+            else
+            {
+                // Player2's turn
+                game.Player2.Move(direction);
+            }
+
+            turns++;
+        }
     }
 
     public Player Player1 { get; }
