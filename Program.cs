@@ -58,11 +58,45 @@ public class Cell
     }
 }
 
+public class Board
+{
+    public Cell[,] grid;
+
+    public Board()
+    {
+        grid = new Cell[6, 6];
+
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                grid[i, j] = new Cell("-");
+            }
+        }
+    }
+}
+
 public class Game
 {
     static void Main(string[] args)
     {
         Console.WriteLine(new Player("John", new Position(3, 4)));
+
+        Board board = new Board();
+
+        displayBoard(board.grid);
+    }
+
+    static void displayBoard(Cell[,] grid)
+    {
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            Console.WriteLine("");
+            for (int j = 0; j < grid.GetLength(1); j++)
+            {
+                Console.Write(grid[i, j].Ocupant + "  ");
+            }
+        }
     }
 }
 
