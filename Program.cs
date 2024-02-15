@@ -48,6 +48,16 @@ public class Player
     }
 }
 
+public class Cell
+{
+    public string Ocupant { get; set; }
+
+    public Cell(string ocupant)
+    {
+        Ocupant = ocupant;
+    }
+}
+
 public class Game
 {
     static void Main(string[] args)
