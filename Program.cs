@@ -1,6 +1,4 @@
-﻿using System;
-
-public class Position
+﻿public class Position
 {
     public int X { get; }
     public int Y { get; }
@@ -125,11 +123,31 @@ public class Game
 {
     static void Main(string[] args)
     {
-        Console.WriteLine(new Player("John", new Position(3, 4)));
-
         Board board = new Board();
-
         displayBoard(board.grid);
+        int currentTurn = 0;
+        getTurn(currentTurn);
+    }
+
+    public Player Player1 { get; }
+    public Player Player2 { get; }
+
+    public Game()
+    {
+        Player1 = new Player("P1", new Position(0, 0));
+        Player2 = new Player("P2", new Position(5, 5));
+    }
+
+    static void getTurn(int turn)
+    {
+        if (turn % 2 == 0)
+        {
+            Console.WriteLine("\nPlayer 1's turn: ");
+        }
+        else
+        {
+            Console.WriteLine("\nPlayer 2's turn: ");
+        }
     }
 
     static void displayBoard(Cell[,] grid)
