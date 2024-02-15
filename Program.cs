@@ -1,4 +1,6 @@
-﻿public class Position
+﻿using System;
+
+public class Position
 {
     public int X { get; }
     public int Y { get; }
@@ -65,12 +67,55 @@ public class Board
     public Board()
     {
         grid = new Cell[6, 6];
+        PlaceRandomGems();
+        PlaceRandomObstacle();
 
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 6; j++)
             {
-                grid[i, j] = new Cell("-");
+                if (grid[i, j] == null)
+                {
+                    grid[i, j] = new Cell("-");
+                }
+            }
+        }
+    }
+
+    private void PlaceRandomGems()
+    {
+        Random random = new Random();
+        int totalGems = 10;
+
+        while (totalGems > 0)
+        {
+            int x = random.Next(0, 6);//random x position
+            int y = random.Next(0, 6);//random y position
+
+            //check if position for placing gem is empty
+            if (grid[x, y] == null)
+            {
+                grid[x, y] = new Cell("G");//we put our gem here
+                totalGems--;
+            }
+        }
+    }
+
+    private void PlaceRandomObstacle()
+    {
+        Random random = new Random();
+        int totalObstacles = 6;
+
+        while (totalObstacles > 0)
+        {
+            int x = random.Next(0, 6);//random x position
+            int y = random.Next(0, 6);//random y position
+
+            //check if position for placing obstacle is empty
+            if (grid[x, y] == null)
+            {
+                grid[x, y] = new Cell("O");//we put our obstacle here
+                totalObstacles--;
             }
         }
     }
@@ -94,7 +139,22 @@ public class Game
             Console.WriteLine("");
             for (int j = 0; j < grid.GetLength(1); j++)
             {
-                Console.Write(grid[i, j].Ocupant + "  ");
+                if (grid[i, j].Ocupant == "-")
+                {
+                    Console.Write("-  ");
+                }
+                else if (grid[i, j].Ocupant == "G")
+                {
+                    Console.Write("G  ");
+                }
+                else if (grid[i, j].Ocupant == "O")
+                {
+                    Console.Write("O  ");
+                }
+                else
+                {
+                    Console.Write(grid[i, j].Ocupant + "  ");
+                }
             }
         }
     }
