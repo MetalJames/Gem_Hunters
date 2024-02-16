@@ -1,4 +1,5 @@
 ﻿using Gem_Hunters;
+using static Gem_Hunters.Player_Initialization;
 using static Gem_Hunters.PositionState;
 
 public class Cell
@@ -106,23 +107,49 @@ public class Board
                 {
                     Console.Write("O  ");
                 }
-                else if (grid[i, j].Ocupant == "P1")
-                {
-                    Console.Write("P1 ");
-                }
-                else if (grid[i, j].Ocupant == "P2")
-                {
-                    Console.Write("P2 ");
-                }
                 else
                 {
                     Console.Write(grid[i, j].Ocupant + "  ");
                 }
             }
         }
+    }
+    public bool IsValidMove(Player player, char direction)
+    {
+        int newXPosition = player.Position.X;
+        int newYPosition = player.Position.Y;
 
-        //Console.WriteLine($"\nPlayer 1: ({player1.Position.X}, {player1.Position.Y})");
-        //Console.WriteLine($"Player 2: ({player2.Position.X}, {player2.Position.Y})");
+        switch(direction)
+        {
+            case 'U':
+                newYPosition--;
+                break;
+            case 'D':
+                newYPosition++;
+                break;
+            case 'L':
+                newXPosition--;
+                break;
+            case 'R':
+                newXPosition++;
+                break;
+            default:
+                Console.WriteLine("Invalid direction. Please enter U, D, L, or R.");
+                return false;
+        }
+
+        if(newXPosition < 0 || newXPosition >= 6 || newYPosition < 0 || newYPosition >= 6)
+        {
+            Console.WriteLine("Out of a range. Choose different direction.");
+            return false;
+        }
+        if (grid[newXPosition, newYPosition].Ocupant == "O")
+        {
+            Console.WriteLine("Can't move here. Road is blocked.");
+            return false;
+        }
+
+        return true;
     }
 }
 
