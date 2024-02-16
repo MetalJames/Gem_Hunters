@@ -62,11 +62,17 @@ public class Board
 {
     public Cell[,] grid;
 
+    public Player Player1 { get; }
+    public Player Player2 { get; }
+
     public Board()
     {
         grid = new Cell[6, 6];
+        Player1 = new Player("P1", new Position(0, 0));
+        Player2 = new Player("P2", new Position(5, 5));
         PlaceRandomGems();
         PlaceRandomObstacle();
+        PlacePlayersOnTheBoard();
 
         for (int i = 0; i < 6; i++)
         {
@@ -79,6 +85,16 @@ public class Board
             }
         }
     }
+
+    private void PlacePlayersOnTheBoard()
+    {
+        // Place Player 1
+        grid[Player1.Position.Y, Player1.Position.X] = new Cell("P1");
+
+        // Place Player 2
+        grid[Player2.Position.Y, Player2.Position.X] = new Cell("P2");
+    }
+
 
     private void PlaceRandomGems()
     {
