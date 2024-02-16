@@ -1,8 +1,6 @@
 ﻿using Gem_Hunters;
 using static Gem_Hunters.PositionState;
 
-
-
 public class Cell
 {
     public string Ocupant { get; set; }
@@ -88,62 +86,8 @@ public class Board
             }
         }
     }
-}
 
-public class Game
-{
-    static void Main(string[] args)
-    {
-        Game game = new Game();
-        Board board = new Board();
-        displayBoard(board.grid);
-        int turns = 0;
-        for (int i=0; turns < 30; i++)
-        {
-            //int currentTurn = 0;
-            getTurn(turns);
-            Console.WriteLine("Enter your Position: ");
-            string userposition = Console.ReadLine().ToUpper();
-            char direction = userposition[0];
-
-            // Assuming turn 0 is for Player1 and turn 1 is for Player2
-            if (turns % 2 == 0)
-            {
-                // Player1's turn
-                game.Player1.Move(direction);
-            }
-            else
-            {
-                // Player2's turn
-                game.Player2.Move(direction);
-            }
-
-            turns++;
-        }
-    }
-
-    public Player_Initialization.Player Player1 { get; }
-    public Player_Initialization.Player Player2 { get; }
-
-    public Game()
-    {
-        Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
-        Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
-    }
-
-    static void getTurn(int turn)
-    {
-        if (turn % 2 == 0)
-        {
-            Console.WriteLine("\nPlayer 1's turn: ");
-        }
-        else
-        {
-            Console.WriteLine("\nPlayer 2's turn: ");
-        }
-    }
-
-    static void displayBoard(Cell[,] grid)
+    public void displayBoard(Cell[,] grid)
     {
         for (int i = 0; i < grid.GetLength(0); i++)
         {
@@ -162,12 +106,90 @@ public class Game
                 {
                     Console.Write("O  ");
                 }
+                else if (grid[i, j].Ocupant == "P1")
+                {
+                    Console.Write("P1 ");
+                }
+                else if (grid[i, j].Ocupant == "P2")
+                {
+                    Console.Write("P2 ");
+                }
                 else
                 {
                     Console.Write(grid[i, j].Ocupant + "  ");
                 }
             }
         }
+
+        //Console.WriteLine($"\nPlayer 1: ({player1.Position.X}, {player1.Position.Y})");
+        //Console.WriteLine($"Player 2: ({player2.Position.X}, {player2.Position.Y})");
     }
 }
 
+public class Game
+{
+    private Board board;
+    public Player_Initialization.Player Player1 { get; }
+    public Player_Initialization.Player Player2 { get; }
+
+    public Game()
+    {
+        board = new Board();
+        Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
+        Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
+    }
+
+    public void Start()
+    {
+        
+        board.displayBoard(board.grid);
+        int turns = 0;
+        for (int i=0; turns < 30; i++)
+        {
+            //int currentTurn = 0;
+            getTurn(turns);
+            Console.WriteLine("Enter your Position: ");
+            string userposition = Console.ReadLine().ToUpper();
+            char direction = userposition[0];
+
+            // Assuming turn 0 is for Player1 and turn 1 is for Player2
+            if (turns % 2 == 0)
+            {
+                // Player1's turn
+                Player1.Move(direction);
+                board.displayBoard(board.grid);
+            }
+            else
+            {
+                // Player2's turn
+                Player2.Move(direction);
+                board.displayBoard(board.grid);
+            }
+
+            turns++;
+        }
+    }
+
+
+
+    static void getTurn(int turn)
+    {
+        if (turn % 2 == 0)
+        {
+            Console.WriteLine("\nPlayer 1's turn: ");
+        }
+        else
+        {
+            Console.WriteLine("\nPlayer 2's turn: ");
+        }
+    }
+}
+
+class GemHunters
+{
+    static void Main(string[] args)
+    {
+        Game game = new Game();
+        game.Start();
+    }
+}
