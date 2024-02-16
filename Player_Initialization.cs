@@ -39,6 +39,11 @@ namespace Gem_Hunters
                         break;
                 }
             }
+
+            public void CollectGem()
+            {
+                GemCount++;
+            }
         }
     }
 }
