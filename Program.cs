@@ -1,52 +1,7 @@
-﻿public class Position
-{
-    public int X { get; }
-    public int Y { get; }
+﻿using Gem_Hunters;
+using static Gem_Hunters.PositionState;
 
-    // Position Constructor
-    public Position(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-}
 
-public class Player
-{
-    public string Name { get; }
-    public Position Position { get; private set; }
-    public int GemCount { get; private set; }
-
-    // Player Constructor
-    public Player(string name, Position position)
-    {
-        Name = name;
-        Position = position;
-        GemCount = 0;
-    }
-
-    // Method to update player's position based on the input direction (U, D, L, R)
-    public void Move(char direction)
-    {
-        switch (direction)
-        {
-            case 'U':
-                Position = new Position(Position.X, Position.Y - 1);
-                break;
-            case 'D':
-                Position = new Position(Position.X, Position.Y + 1);
-                break;
-            case 'L':
-                Position = new Position(Position.X - 1, Position.Y);
-                break;
-            case 'R':
-                Position = new Position(Position.X + 1, Position.Y);
-                break;
-            default:
-                break;
-        }
-    }
-}
 
 public class Cell
 {
@@ -62,14 +17,14 @@ public class Board
 {
     public Cell[,] grid;
 
-    public Player Player1 { get; }
-    public Player Player2 { get; }
+    public Player_Initialization.Player Player1 { get; }
+    public Player_Initialization.Player Player2 { get; }
 
     public Board()
     {
         grid = new Cell[6, 6];
-        Player1 = new Player("P1", new Position(0, 0));
-        Player2 = new Player("P2", new Position(5, 5));
+        Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
+        Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
         PlaceRandomGems();
         PlaceRandomObstacle();
         PlacePlayersOnTheBoard();
@@ -89,10 +44,10 @@ public class Board
     private void PlacePlayersOnTheBoard()
     {
         // Place Player 1
-        grid[Player1.Position.Y, Player1.Position.X] = new Cell("P1");
+        grid[Player1.Position.X, Player1.Position.Y] = new Cell("P1");
 
         // Place Player 2
-        grid[Player2.Position.Y, Player2.Position.X] = new Cell("P2");
+        grid[Player2.Position.X, Player2.Position.Y] = new Cell("P2");
     }
 
 
@@ -167,13 +122,13 @@ public class Game
         }
     }
 
-    public Player Player1 { get; }
-    public Player Player2 { get; }
+    public Player_Initialization.Player Player1 { get; }
+    public Player_Initialization.Player Player2 { get; }
 
     public Game()
     {
-        Player1 = new Player("P1", new Position(0, 0));
-        Player2 = new Player("P2", new Position(5, 5));
+        Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
+        Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
     }
 
     static void getTurn(int turn)
