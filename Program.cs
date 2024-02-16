@@ -179,21 +179,20 @@ public class Game
             string userposition = Console.ReadLine().ToUpper();
             char direction = userposition[0];
 
-            // Assuming turn 0 is for Player1 and turn 1 is for Player2
-            if (turns % 2 == 0)
-            {
-                // Player1's turn
-                Player1.Move(direction);
-                board.displayBoard(board.grid);
-            }
-            else
-            {
-                // Player2's turn
-                Player2.Move(direction);
-                board.displayBoard(board.grid);
-            }
+            Player_Initialization.Player currentPlayer = (turns % 2 == 0) ? Player1 : Player2;
 
-            turns++;
+            if(board.IsValidMove(currentPlayer, direction))
+            {
+                //In grid Y should go before X - so much time was wasted!
+                //board.grid[currentPlayer.Position.X, currentPlayer.Position.Y].Ocupant = "-";
+                board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = "-";
+                currentPlayer.Move(direction);
+
+                board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
+                board.displayBoard(board.grid);
+
+                turns++;
+            }
         }
     }
 
