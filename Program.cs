@@ -88,7 +88,7 @@ public class Board
         }
     }
 
-    public void displayBoard(Cell[,] grid)
+    public void displayBoard(Cell[,] grid, Player Player1, Player Player2)
     {
         for (int i = 0; i < grid.GetLength(0); i++)
         {
@@ -107,12 +107,22 @@ public class Board
                 {
                     Console.Write("O  ");
                 }
+                else if (grid[i, j].Ocupant == "P1")
+                {
+                    Console.Write("P1  ");
+                }
+                else if (grid[i, j].Ocupant == "P2")
+                {
+                    Console.Write("P2  ");
+                }
                 else
                 {
                     Console.Write(grid[i, j].Ocupant + "  ");
                 }
             }
         }
+        Console.WriteLine($"\nPlayer 1 Gems: {Player1.GemCount}");
+        Console.WriteLine($"Player 2 Gems: {Player2.GemCount}");
     }
     public bool IsValidMove(Player player, char direction)
     {
@@ -143,7 +153,9 @@ public class Board
             Console.WriteLine("Out of a range. Choose different direction.");
             return false;
         }
-        if (grid[newXPosition, newYPosition].Ocupant == "O")
+        //same mistake as before Y should be before X in the grid
+        //if (grid[newXPosition, newYPosition].Ocupant == "O")
+        if (grid[newYPosition, newXPosition].Ocupant == "O")
         {
             Console.WriteLine("Can't move here. Road is blocked.");
             return false;
@@ -169,7 +181,7 @@ public class Game
     public void Start()
     {
         
-        board.displayBoard(board.grid);
+        board.displayBoard(board.grid, Player1, Player2);
         int turns = 0;
         for (int i=0; turns < 30; i++)
         {
@@ -189,7 +201,7 @@ public class Game
                 currentPlayer.Move(direction);
 
                 board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
-                board.displayBoard(board.grid);
+                board.displayBoard(board.grid, Player1, Player2);
 
                 turns++;
             }
