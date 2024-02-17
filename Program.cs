@@ -109,16 +109,16 @@ public class Board
                 }
                 else if (grid[i, j].Ocupant == "P1")
                 {
-                    Console.Write("P1  ");
+                    Console.Write("P1 ");
                 }
                 else if (grid[i, j].Ocupant == "P2")
                 {
-                    Console.Write("P2  ");
+                    Console.Write("P2 ");
                 }
-                else
+                /*else
                 {
                     Console.Write(grid[i, j].Ocupant + "  ");
-                }
+                }*/
             }
         }
         Console.WriteLine($"\nPlayer 1 Gems: {Player1.GemCount}");
@@ -200,8 +200,19 @@ public class Game
                 board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = "-";
                 currentPlayer.Move(direction);
 
-                board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
-                board.displayBoard(board.grid, Player1, Player2);
+                //Collecting gems
+                if (board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant == "G")
+                {
+                    currentPlayer.CollectGem();
+                    board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
+                    board.displayBoard(board.grid, Player1, Player2);
+                }
+                else
+                {
+                    board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
+                    board.displayBoard(board.grid, Player1, Player2);
+                }
+
 
                 turns++;
             }
