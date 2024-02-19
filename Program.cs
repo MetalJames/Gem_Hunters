@@ -182,16 +182,13 @@ public class Game
     {
         
         board.displayBoard(board.grid, Player1, Player2);
-        int turns = 0;
-        for (int i=0; turns < 30; i++)
+        Player currentPlayer = Player1;
+        for (int turns=0; turns < 30; turns++)
         {
-            //int currentTurn = 0;
             getTurn(turns);
             Console.WriteLine("Enter your Position: ");
             string userposition = Console.ReadLine().ToUpper();
             char direction = userposition[0];
-
-            Player_Initialization.Player currentPlayer = (turns % 2 == 0) ? Player1 : Player2;
 
             if(board.IsValidMove(currentPlayer, direction))
             {
@@ -212,14 +209,16 @@ public class Game
                     board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
                     board.displayBoard(board.grid, Player1, Player2);
                 }
-
-
-                turns++;
+                
+                SwitchTurs(ref currentPlayer);
             }
         }
     }
 
-
+    public void SwitchTurs(ref Player currentPlayer) 
+    {
+        currentPlayer = (currentPlayer == Player1) ? Player2 : Player1;
+    }
 
     static void getTurn(int turn)
     {
