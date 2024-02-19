@@ -8,7 +8,7 @@ namespace Gem_Hunters
         {
             public string Name { get; }
             public Position Position { get; private set; }
-            public int GemCount { get; private set; }
+            public int GemCount { get; set; }
 
             // Player Constructor
             public Player(string name, Position position)
@@ -38,11 +38,6 @@ namespace Gem_Hunters
                     default:
                         break;
                 }
-            }
-
-            public void CollectGem()
-            {
-                GemCount++;
             }
         }
     }

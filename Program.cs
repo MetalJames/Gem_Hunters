@@ -96,6 +96,11 @@ public class Board
                (Math.Abs(x - Player2.Position.X) <= 1 && Math.Abs(y - Player2.Position.Y) <= 1);
     }
 
+    public void CollectGem(Player Player)
+    {
+        Player.GemCount++;
+    }
+
     //counting remaining gems
     public int CountRemainingGems()
     {
@@ -174,7 +179,7 @@ public class Board
 
         if(newXPosition < 0 || newXPosition >= 6 || newYPosition < 0 || newYPosition >= 6)
         {
-            Console.WriteLine("Out of a range. Choose different direction.");
+            Console.WriteLine("You can not fly. Choose different direction.");
             return false;
         }
         //same mistake as before Y should be before X in the grid
@@ -200,54 +205,56 @@ public class Game
     public Player_Initialization.Player Player1 { get; }
     public Player_Initialization.Player Player2 { get; }
 
+    public Player CurrentTurn { get; private set; }
+    public int TotalTurns { get; private set; }
+
     public Game()
     {
         board = new Board();
         Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
         Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
+        CurrentTurn = Player1;
     }
     public void Start()
     {
         board.displayBoard(board.grid, Player1, Player2);
-        Player currentPlayer = Player1;
-        //have to try the other way to prevent wrong count
-        int turns = 0;
-        while(!IsGameOver(Player1, Player2, turns)) 
+        CurrentTurn = Player1;
+        int TotalTurns = 0;
+        while(!IsGameOver(Player1, Player2, TotalTurns)) 
         {
-            getTurn(currentPlayer, this);
+            getTurn(CurrentTurn, this);
             Console.WriteLine("Enter your Position: ");
             string userposition = Console.ReadLine().ToUpper();
             char direction = userposition[0];
 
-            if (board.IsValidMove(currentPlayer, direction))
+            if (board.IsValidMove(CurrentTurn, direction))
             {
-                //In grid Y should go before X - so much time was wasted!
-                //board.grid[currentPlayer.Position.X, currentPlayer.Position.Y].Ocupant = "-";
-                board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = "-";
-                currentPlayer.Move(direction);
-
                 //Collecting gems
-                if (board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant == "G")
-                {
-                    currentPlayer.CollectGem();
-                    board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
-                    board.displayBoard(board.grid, Player1, Player2);
-                }
-                else
-                {
-                    board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
-                    board.displayBoard(board.grid, Player1, Player2);
-                }
-                turns++;
-                SwitchTurs(ref currentPlayer);
+                UpdateGameState(CurrentTurn, direction);
+                TotalTurns++;
+                SwitchTurs();
             }
         }
         AnnounceWinner();
     }
 
-    public void SwitchTurs(ref Player currentPlayer)
+    public void SwitchTurs()
     {
-        currentPlayer = (currentPlayer == Player1) ? Player2 : Player1;
+        CurrentTurn = (CurrentTurn == Player1) ? Player2 : Player1;
+    }
+    //In grid Y should go before X - so much time was wasted!
+    //board.grid[currentPlayer.Position.X, currentPlayer.Position.Y].Ocupant = "-";
+    //have to create update game status method to make it more redable
+    private void UpdateGameState(Player Player, char direction)
+    {
+        board.grid[Player.Position.Y, Player.Position.X].Ocupant = "-";
+        Player.Move(direction);
+        if (board.grid[Player.Position.Y, Player.Position.X].Ocupant == "G")
+        {
+            board.CollectGem(Player);
+        }
+        board.grid[Player.Position.Y, Player.Position.X].Ocupant = Player.Name;
+        board.displayBoard(board.grid, Player1, Player2);
     }
 
     //old method didnt work properly - so I have updated my code to display correct players turn
