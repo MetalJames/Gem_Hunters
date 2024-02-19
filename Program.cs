@@ -182,20 +182,20 @@ public class Game
         Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
         Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
     }
-
     public void Start()
     {
-        
         board.displayBoard(board.grid, Player1, Player2);
         Player currentPlayer = Player1;
-        for (int turns=0; turns < 30; turns++)
+        //have to try the other way to prevent wrong count
+        int turns = 0;
+        while(turns <= 30) 
         {
-            getTurn(turns);
+            getTurn(currentPlayer, this);
             Console.WriteLine("Enter your Position: ");
             string userposition = Console.ReadLine().ToUpper();
             char direction = userposition[0];
 
-            if(board.IsValidMove(currentPlayer, direction))
+            if (board.IsValidMove(currentPlayer, direction))
             {
                 //In grid Y should go before X - so much time was wasted!
                 //board.grid[currentPlayer.Position.X, currentPlayer.Position.Y].Ocupant = "-";
@@ -214,20 +214,22 @@ public class Game
                     board.grid[currentPlayer.Position.Y, currentPlayer.Position.X].Ocupant = currentPlayer.Name;
                     board.displayBoard(board.grid, Player1, Player2);
                 }
-                
+                turns++;
                 SwitchTurs(ref currentPlayer);
             }
         }
     }
 
-    public void SwitchTurs(ref Player currentPlayer) 
+    public void SwitchTurs(ref Player currentPlayer)
     {
         currentPlayer = (currentPlayer == Player1) ? Player2 : Player1;
     }
 
-    static void getTurn(int turn)
+    //old method didnt work properly - so I have updated my code to display correct players turn
+    //in case is player get to an obstacle or into another player
+    static void getTurn(Player currentPlayer, Game game)
     {
-        if (turn % 2 == 0)
+        if (currentPlayer == game.Player1)
         {
             Console.WriteLine("\nPlayer 1's turn: ");
         }
@@ -236,6 +238,7 @@ public class Game
             Console.WriteLine("\nPlayer 2's turn: ");
         }
     }
+
 }
 
 class GemHunters
