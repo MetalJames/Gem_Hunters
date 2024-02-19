@@ -53,7 +53,7 @@ public class Board
     private void PlaceRandomGems()
     {
         Random random = new Random();
-        int totalGems = 10;
+        int totalGems = 11;
 
         while (totalGems > 0)
         {
@@ -61,7 +61,7 @@ public class Board
             int y = random.Next(0, 6);//random y position
 
             //check if position for placing gem is empty
-            if (grid[x, y] == null)
+            if (grid[x, y] == null && !IsAdjacentToPlayer(x, y))
             {
                 grid[x, y] = new Cell("G");//we put our gem here
                 totalGems--;
@@ -80,12 +80,34 @@ public class Board
             int y = random.Next(0, 6);//random y position
 
             //check if position for placing obstacle is empty
-            if (grid[x, y] == null)
+            if (grid[x, y] == null && !IsAdjacentToPlayer(x, y))
             {
                 grid[x, y] = new Cell("O");//we put our obstacle here
                 totalObstacles--;
             }
         }
+    }
+
+    //I add this to prevent any player to be blocked by obstacle
+    private bool IsAdjacentToPlayer(int x, int y)
+    {
+        // Check if the given position is adjacent to any player
+        return (Math.Abs(x - Player1.Position.X) <= 1 && Math.Abs(y - Player1.Position.Y) <= 1) ||
+               (Math.Abs(x - Player2.Position.X) <= 1 && Math.Abs(y - Player2.Position.Y) <= 1);
+    }
+
+    //counting remaining gems
+    public int CountRemainingGems()
+    {
+        int count = 0;
+        foreach(Cell cell in grid)
+        {
+            if(cell != null && cell.Ocupant == "G")
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     public void displayBoard(Cell[,] grid, Player Player1, Player Player2)
@@ -123,6 +145,8 @@ public class Board
         }
         Console.WriteLine($"\nPlayer 1 Gems: {Player1.GemCount}");
         Console.WriteLine($"Player 2 Gems: {Player2.GemCount}");
+        Console.WriteLine();
+        Console.WriteLine($"Remaining Gems: {CountRemainingGems()}");
     }
     public bool IsValidMove(Player player, char direction)
     {
@@ -188,7 +212,7 @@ public class Game
         Player currentPlayer = Player1;
         //have to try the other way to prevent wrong count
         int turns = 0;
-        while(turns <= 30) 
+        while(!IsGameOver(Player1, Player2, turns)) 
         {
             getTurn(currentPlayer, this);
             Console.WriteLine("Enter your Position: ");
@@ -237,6 +261,19 @@ public class Game
         {
             Console.WriteLine("\nPlayer 2's turn: ");
         }
+    }
+
+    public bool IsGameOver(Player Player1, Player Player2, int totalMoves)
+    {
+        int maxTurns = 30;
+        int totalGems = 11;
+        if(maxTurns <= totalMoves || Player1.GemCount >= totalGems || Player2.GemCount >= totalGems || (Player1.GemCount + Player2.GemCount) >= totalGems)
+        {
+            Console.WriteLine("Gmae Over!");
+            return true;
+        }
+
+        return false;
     }
 
 }
