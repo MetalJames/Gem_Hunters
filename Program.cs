@@ -242,6 +242,7 @@ public class Game
                 SwitchTurs(ref currentPlayer);
             }
         }
+        AnnounceWinner();
     }
 
     public void SwitchTurs(ref Player currentPlayer)
@@ -267,7 +268,7 @@ public class Game
     {
         int maxTurns = 30;
         int totalGems = 11;
-        if(maxTurns <= totalMoves || Player1.GemCount >= totalGems || Player2.GemCount >= totalGems || (Player1.GemCount + Player2.GemCount) >= totalGems)
+        if(maxTurns <= totalMoves || Player1.GemCount >= totalGems || Player2.GemCount >= totalGems || board.CountRemainingGems() == 0)
         {
             Console.WriteLine("Gmae Over!");
             return true;
@@ -275,6 +276,23 @@ public class Game
 
         return false;
     }
+
+    public void AnnounceWinner()
+    {
+        if (Player1.GemCount > Player2.GemCount)
+        {
+            Console.WriteLine("Player 1 Wins!");
+        }
+        else if (Player1.GemCount < Player2.GemCount)
+        {
+            Console.WriteLine("Player 2 Wins!");
+        }
+        else
+        {
+            Console.WriteLine("It's a Tie!");
+        }
+    }
+
 
 }
 
