@@ -160,7 +160,12 @@ public class Board
             Console.WriteLine("Can't move here. Road is blocked.");
             return false;
         }
-
+        //add this to prevent P1 going on top of P2
+        if(grid[newYPosition, newXPosition].Ocupant == "P1" || grid[newYPosition, newXPosition].Ocupant == "P2")
+        {
+            Console.WriteLine("Ouch, Don't you see I'm here? Go elsewhere!");
+            return false;
+        }
         return true;
     }
 }
