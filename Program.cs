@@ -61,7 +61,7 @@ public class Board
             int y = random.Next(0, 6);//random y position
 
             //check if position for placing gem is empty
-            if (grid[x, y] == null && !IsAdjacentToPlayer(x, y))
+            if (grid[x, y] == null && !IsAdjacentToPlayer(x, y) && Position.IsPositionValid(x, y, grid.GetLength(0)))
             {
                 grid[x, y] = new Cell("G");//we put our gem here
                 totalGems--;
@@ -80,7 +80,7 @@ public class Board
             int y = random.Next(0, 6);//random y position
 
             //check if position for placing obstacle is empty
-            if (grid[x, y] == null && !IsAdjacentToPlayer(x, y))
+            if (grid[x, y] == null && !IsAdjacentToPlayer(x, y) && Position.IsPositionValid(x, y, grid.GetLength(0)))
             {
                 grid[x, y] = new Cell("O");//we put our obstacle here
                 totalObstacles--;
