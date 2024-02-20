@@ -115,7 +115,7 @@ public class Board
         return count;
     }
 
-    public void displayBoard(Cell[,] grid, Player Player1, Player Player2)
+    public void displayBoard(Cell[,] grid, Player Player1, Player Player2, Game game)
     {
         for (int i = 0; i < grid.GetLength(0); i++)
         {
@@ -148,8 +148,8 @@ public class Board
                 }*/
             }
         }
-        Console.WriteLine($"\nPlayer 1 Gems: {Player1.GemCount}");
-        Console.WriteLine($"Player 2 Gems: {Player2.GemCount}");
+        Console.WriteLine($"\n{game.P1Name} Gems: {Player1.GemCount}");
+        Console.WriteLine($"{game.P2Name} Gems: {Player2.GemCount}");
         Console.WriteLine();
         Console.WriteLine($"Remaining Gems: {CountRemainingGems()}");
     }
@@ -205,6 +205,10 @@ public class Game
     public Player_Initialization.Player Player1 { get; }
     public Player_Initialization.Player Player2 { get; }
 
+    // Declare player names as fields
+    public string P1Name;
+    public string P2Name;
+
     public Player CurrentTurn { get; private set; }
     public int TotalTurns { get; private set; }
 
@@ -214,17 +218,27 @@ public class Game
         Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
         Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
         CurrentTurn = Player1;
+
+        Console.Write("Enter Player 1's name: ");
+        // Assign input to P1Name field
+        string inputP1 = Console.ReadLine()!;
+        P1Name = string.IsNullOrEmpty(inputP1) ? "Player 1" : inputP1;
+
+        Console.Write("Enter Player 2's name: ");
+        // Assign input to P2Name field
+        string inputP2 = Console.ReadLine()!;
+        P2Name = string.IsNullOrEmpty(inputP2) ? "Player 2" : inputP2;
     }
     public void Start()
     {
-        board.displayBoard(board.grid, Player1, Player2);
+        board.displayBoard(board.grid, Player1, Player2, this);
         CurrentTurn = Player1;
         int TotalTurns = 0;
         while(!IsGameOver(Player1, Player2, TotalTurns)) 
         {
             getTurn(CurrentTurn, this);
             Console.WriteLine("Enter your Position: ");
-            string userposition = Console.ReadLine().ToUpper();
+            string userposition = Console.ReadLine()!.ToUpper();
             char direction = userposition[0];
 
             if (board.IsValidMove(CurrentTurn, direction))
@@ -254,7 +268,7 @@ public class Game
             board.CollectGem(Player);
         }
         board.grid[Player.Position.Y, Player.Position.X].Ocupant = Player.Name;
-        board.displayBoard(board.grid, Player1, Player2);
+        board.displayBoard(board.grid, Player1, Player2, this);
     }
 
     //old method didnt work properly - so I have updated my code to display correct players turn
@@ -263,11 +277,11 @@ public class Game
     {
         if (currentPlayer == game.Player1)
         {
-            Console.WriteLine("\nPlayer 1's turn: ");
+            Console.WriteLine($"\n{game.P1Name}'s turn: ");
         }
         else
         {
-            Console.WriteLine("\nPlayer 2's turn: ");
+            Console.WriteLine($"\n{game.P2Name}'s turn: ");
         }
     }
 
@@ -277,7 +291,7 @@ public class Game
         int totalGems = 11;
         if(maxTurns <= totalMoves || Player1.GemCount >= totalGems || Player2.GemCount >= totalGems || board.CountRemainingGems() == 0)
         {
-            Console.WriteLine("Gmae Over!");
+            Console.WriteLine("Game Over!");
             return true;
         }
 
@@ -288,11 +302,11 @@ public class Game
     {
         if (Player1.GemCount > Player2.GemCount)
         {
-            Console.WriteLine("Player 1 Wins!");
+            Console.WriteLine($"{P1Name} Wins!");
         }
         else if (Player1.GemCount < Player2.GemCount)
         {
-            Console.WriteLine("Player 2 Wins!");
+            Console.WriteLine($"{P2Name} Wins!");
         }
         else
         {
