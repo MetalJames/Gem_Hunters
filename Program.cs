@@ -4,11 +4,11 @@ using static Gem_Hunters.PositionState;
 
 public class Cell
 {
-    public string Ocupant { get; set; }
+    public string Occupant { get; set; }
 
-    public Cell(string ocupant)
+    public Cell(string occupant)
     {
-        Ocupant = ocupant;
+        Occupant = occupant;
     }
 }
 
@@ -16,18 +16,22 @@ public class Board
 {
     public Cell[,] grid;
 
-    public Player_Initialization.Player Player1 { get; }
-    public Player_Initialization.Player Player2 { get; }
+    public Player Player1 { get; }
+    public Player Player2 { get; }
 
     public Board()
     {
         grid = new Cell[6, 6];
-        Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
-        Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
+        Player1 = new Player("P1", new Position(0, 0));
+        Player2 = new Player("P2", new Position(5, 5));
         PlaceRandomGems();
         PlaceRandomObstacle();
         PlacePlayersOnTheBoard();
+        InitializeBoard();
+    }
 
+    private void InitializeBoard()
+    {
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 6; j++)
@@ -48,7 +52,6 @@ public class Board
         // Place Player 2
         grid[Player2.Position.X, Player2.Position.Y] = new Cell("P2");
     }
-
 
     private void PlaceRandomGems()
     {
@@ -107,7 +110,7 @@ public class Board
         int count = 0;
         foreach(Cell cell in grid)
         {
-            if(cell != null && cell.Ocupant == "G")
+            if(cell != null && cell.Occupant == "G")
             {
                 count++;
             }
@@ -122,30 +125,26 @@ public class Board
             Console.WriteLine("");
             for (int j = 0; j < grid.GetLength(1); j++)
             {
-                if (grid[i, j].Ocupant == "-")
+                if (grid[i, j].Occupant == "-")
                 {
                     Console.Write("-  ");
                 }
-                else if (grid[i, j].Ocupant == "G")
+                else if (grid[i, j].Occupant == "G")
                 {
                     Console.Write("G  ");
                 }
-                else if (grid[i, j].Ocupant == "O")
+                else if (grid[i, j].Occupant == "O")
                 {
                     Console.Write("O  ");
                 }
-                else if (grid[i, j].Ocupant == "P1")
+                else if (grid[i, j].Occupant == "P1")
                 {
                     Console.Write("P1 ");
                 }
-                else if (grid[i, j].Ocupant == "P2")
+                else if (grid[i, j].Occupant == "P2")
                 {
                     Console.Write("P2 ");
                 }
-                /*else
-                {
-                    Console.Write(grid[i, j].Ocupant + "  ");
-                }*/
             }
         }
         Console.WriteLine($"\n{game.P1Name} Gems: {Player1.GemCount}");
@@ -183,14 +182,14 @@ public class Board
             return false;
         }
         //same mistake as before Y should be before X in the grid
-        //if (grid[newXPosition, newYPosition].Ocupant == "O")
-        if (grid[newYPosition, newXPosition].Ocupant == "O")
+        //if (grid[newXPosition, newYPosition].Occupant == "O")
+        if (grid[newYPosition, newXPosition].Occupant == "O")
         {
             Console.WriteLine("Can't move here. Road is blocked.");
             return false;
         }
         //add this to prevent P1 going on top of P2
-        if(grid[newYPosition, newXPosition].Ocupant == "P1" || grid[newYPosition, newXPosition].Ocupant == "P2")
+        if(grid[newYPosition, newXPosition].Occupant == "P1" || grid[newYPosition, newXPosition].Occupant == "P2")
         {
             Console.WriteLine("Ouch, Don't you see I'm here? Go elsewhere!");
             return false;
@@ -202,8 +201,8 @@ public class Board
 public class Game
 {
     private Board board;
-    public Player_Initialization.Player Player1 { get; }
-    public Player_Initialization.Player Player2 { get; }
+    public Player Player1 { get; }
+    public Player Player2 { get; }
 
     // Declare player names as fields
     public string P1Name;
@@ -215,8 +214,8 @@ public class Game
     public Game()
     {
         board = new Board();
-        Player1 = new Player_Initialization.Player("P1", new Position(0, 0));
-        Player2 = new Player_Initialization.Player("P2", new Position(5, 5));
+        Player1 = new Player("P1", new Position(0, 0));
+        Player2 = new Player("P2", new Position(5, 5));
         CurrentTurn = Player1;
 
         Console.Write("Enter Player 1's name: ");
@@ -257,17 +256,17 @@ public class Game
         CurrentTurn = (CurrentTurn == Player1) ? Player2 : Player1;
     }
     //In grid Y should go before X - so much time was wasted!
-    //board.grid[currentPlayer.Position.X, currentPlayer.Position.Y].Ocupant = "-";
+    //board.grid[currentPlayer.Position.X, currentPlayer.Position.Y].Occupant = "-";
     //have to create update game status method to make it more redable
     private void UpdateGameState(Player Player, char direction)
     {
-        board.grid[Player.Position.Y, Player.Position.X].Ocupant = "-";
+        board.grid[Player.Position.Y, Player.Position.X].Occupant = "-";
         Player.Move(direction);
-        if (board.grid[Player.Position.Y, Player.Position.X].Ocupant == "G")
+        if (board.grid[Player.Position.Y, Player.Position.X].Occupant == "G")
         {
             board.CollectGem(Player);
         }
-        board.grid[Player.Position.Y, Player.Position.X].Ocupant = Player.Name;
+        board.grid[Player.Position.Y, Player.Position.X].Occupant = Player.Name;
         board.displayBoard(board.grid, Player1, Player2, this);
     }
 
@@ -294,7 +293,6 @@ public class Game
             Console.WriteLine("Game Over!");
             return true;
         }
-
         return false;
     }
 
@@ -313,8 +311,6 @@ public class Game
             Console.WriteLine("It's a Tie!");
         }
     }
-
-
 }
 
 class GemHunters
