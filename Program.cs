@@ -2,11 +2,20 @@
 using static Gem_Hunters.Player_Initialization;
 using static Gem_Hunters.PositionState;
 
+public enum OccupantType
+{
+    Empty,
+    Player1,
+    Player2,
+    Gem,
+    Obstacle
+}
+
 public class Cell
 {
-    public string Occupant { get; set; }
+    public OccupantType Occupant { get; set; }
 
-    public Cell(string occupant)
+    public Cell(OccupantType occupant)
     {
         Occupant = occupant;
     }
@@ -38,7 +47,7 @@ public class Board
             {
                 if (grid[i, j] == null)
                 {
-                    grid[i, j] = new Cell("-");
+                    grid[i, j] = new Cell(OccupantType.Empty);
                 }
             }
         }
@@ -47,10 +56,10 @@ public class Board
     private void PlacePlayersOnTheBoard()
     {
         // Place Player 1
-        grid[Player1.Position.X, Player1.Position.Y] = new Cell("P1");
+        grid[Player1.Position.X, Player1.Position.Y] = new Cell(OccupantType.Player1);
 
         // Place Player 2
-        grid[Player2.Position.X, Player2.Position.Y] = new Cell("P2");
+        grid[Player2.Position.X, Player2.Position.Y] = new Cell(OccupantType.Player2);
     }
 
     private void PlaceRandomGems()
@@ -66,7 +75,7 @@ public class Board
             //check if position for placing gem is empty
             if (grid[x, y] == null && !IsAdjacentToPlayer(x, y) && Position.IsPositionValid(x, y, grid.GetLength(0)))
             {
-                grid[x, y] = new Cell("G");//we put our gem here
+                grid[x, y] = new Cell(OccupantType.Gem);//we put our gem here
                 totalGems--;
             }
         }
@@ -85,7 +94,7 @@ public class Board
             //check if position for placing obstacle is empty
             if (grid[x, y] == null && !IsAdjacentToPlayer(x, y) && Position.IsPositionValid(x, y, grid.GetLength(0)))
             {
-                grid[x, y] = new Cell("O");//we put our obstacle here
+                grid[x, y] = new Cell(OccupantType.Obstacle);//we put our obstacle here
                 totalObstacles--;
             }
         }
@@ -110,7 +119,7 @@ public class Board
         int count = 0;
         foreach(Cell cell in grid)
         {
-            if(cell != null && cell.Occupant == "G")
+            if(cell != null && cell.Occupant == OccupantType.Gem)
             {
                 count++;
             }
@@ -118,32 +127,30 @@ public class Board
         return count;
     }
 
-    public void displayBoard(Cell[,] grid, Player Player1, Player Player2, Game game)
+    public void DisplayBoard(Cell[,] grid, Player Player1, Player Player2, Game game)
     {
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             Console.WriteLine("");
             for (int j = 0; j < grid.GetLength(1); j++)
             {
-                if (grid[i, j].Occupant == "-")
+                switch (grid[i, j].Occupant) // Changed to switch statement - easier to read
                 {
-                    Console.Write("-  ");
-                }
-                else if (grid[i, j].Occupant == "G")
-                {
-                    Console.Write("G  ");
-                }
-                else if (grid[i, j].Occupant == "O")
-                {
-                    Console.Write("O  ");
-                }
-                else if (grid[i, j].Occupant == "P1")
-                {
-                    Console.Write("P1 ");
-                }
-                else if (grid[i, j].Occupant == "P2")
-                {
-                    Console.Write("P2 ");
+                    case OccupantType.Empty:
+                        Console.Write("-  ");
+                        break;
+                    case OccupantType.Gem:
+                        Console.Write("G  ");
+                        break;
+                    case OccupantType.Obstacle:
+                        Console.Write("O  ");
+                        break;
+                    case OccupantType.Player1:
+                        Console.Write("P1 ");
+                        break;
+                    case OccupantType.Player2:
+                        Console.Write("P2 ");
+                        break;
                 }
             }
         }
@@ -183,13 +190,13 @@ public class Board
         }
         //same mistake as before Y should be before X in the grid
         //if (grid[newXPosition, newYPosition].Occupant == "O")
-        if (grid[newYPosition, newXPosition].Occupant == "O")
+        if (grid[newYPosition, newXPosition].Occupant == OccupantType.Obstacle)
         {
             Console.WriteLine("Can't move here. Road is blocked.");
             return false;
         }
         //add this to prevent P1 going on top of P2
-        if(grid[newYPosition, newXPosition].Occupant == "P1" || grid[newYPosition, newXPosition].Occupant == "P2")
+        if(grid[newYPosition, newXPosition].Occupant == OccupantType.Player1 || grid[newYPosition, newXPosition].Occupant == OccupantType.Player2)
         {
             Console.WriteLine("Ouch, Don't you see I'm here? Go elsewhere!");
             return false;
@@ -201,12 +208,12 @@ public class Board
 public class Game
 {
     private Board board;
-    public Player Player1 { get; }
-    public Player Player2 { get; }
+    private Player Player1 { get; }
+    private Player Player2 { get; }
 
     // Declare player names as fields
-    public string P1Name;
-    public string P2Name;
+    public string P1Name { get; private set; }
+    public string P2Name { get; private set; }
 
     public Player CurrentTurn { get; private set; }
     public int TotalTurns { get; private set; }
@@ -230,12 +237,12 @@ public class Game
     }
     public void Start()
     {
-        board.displayBoard(board.grid, Player1, Player2, this);
+        board.DisplayBoard(board.grid, Player1, Player2, this);
         CurrentTurn = Player1;
         int TotalTurns = 0;
         while(!IsGameOver(Player1, Player2, TotalTurns)) 
         {
-            getTurn(CurrentTurn, this);
+            GetTurn(CurrentTurn, this);
             Console.WriteLine("Enter your Position: ");
             string userposition = Console.ReadLine()!.ToUpper();
             char direction = userposition[0];
@@ -245,13 +252,13 @@ public class Game
                 //Collecting gems
                 UpdateGameState(CurrentTurn, direction);
                 TotalTurns++;
-                SwitchTurs();
+                SwitchTurns();
             }
         }
         AnnounceWinner();
     }
 
-    public void SwitchTurs()
+    public void SwitchTurns()
     {
         CurrentTurn = (CurrentTurn == Player1) ? Player2 : Player1;
     }
@@ -260,28 +267,21 @@ public class Game
     //have to create update game status method to make it more redable
     private void UpdateGameState(Player Player, char direction)
     {
-        board.grid[Player.Position.Y, Player.Position.X].Occupant = "-";
+        board.grid[Player.Position.Y, Player.Position.X].Occupant = OccupantType.Empty;
         Player.Move(direction);
-        if (board.grid[Player.Position.Y, Player.Position.X].Occupant == "G")
+        if (board.grid[Player.Position.Y, Player.Position.X].Occupant == OccupantType.Gem)
         {
             board.CollectGem(Player);
         }
-        board.grid[Player.Position.Y, Player.Position.X].Occupant = Player.Name;
-        board.displayBoard(board.grid, Player1, Player2, this);
+        board.grid[Player.Position.Y, Player.Position.X].Occupant = Player == Player1 ? OccupantType.Player1 : OccupantType.Player2;
+        board.DisplayBoard(board.grid, Player1, Player2, this);
     }
 
     //old method didnt work properly - so I have updated my code to display correct players turn
-    //in case is player get to an obstacle or into another player
-    static void getTurn(Player currentPlayer, Game game)
+    //in case is player get to an obstacle or into another player - changed to ternary operator
+    private static void GetTurn(Player currentPlayer, Game game)
     {
-        if (currentPlayer == game.Player1)
-        {
-            Console.WriteLine($"\n{game.P1Name}'s turn: ");
-        }
-        else
-        {
-            Console.WriteLine($"\n{game.P2Name}'s turn: ");
-        }
+        Console.WriteLine(currentPlayer == game.Player1 ? $"\n{game.P1Name}'s turn: " : $"\n{game.P2Name}'s turn: ");
     }
 
     public bool IsGameOver(Player Player1, Player Player2, int totalMoves)
