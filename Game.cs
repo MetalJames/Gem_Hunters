@@ -93,6 +93,7 @@ namespace Gem_Hunters
             int totalGems = 11;
             if (maxTurns <= totalMoves || Player1.GemCount >= totalGems || Player2.GemCount >= totalGems || board.CountRemainingGems() == 0)
             {
+                Console.WriteLine();
                 Console.WriteLine("Game Over!");
                 return true;
             }
