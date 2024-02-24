@@ -23,7 +23,7 @@ namespace Gem_Hunters
             Player2 = new Player("P2", new Position(5, 5));
             CurrentTurn = Player1;
             Console.WriteLine("Welcome to the \"Gem Hunters\"");
-            Console.WriteLine("To play this game enter a direction (U, D, L, R).");
+            Console.WriteLine("To play this game enter a direction (U, D, L, R). \nBoth players have 30 turns(15 each) and 11 gems to collect.");
             Console.WriteLine();
             Console.Write("Enter Player 1's name: ");
             // Assign input to P1Name field
@@ -39,7 +39,8 @@ namespace Gem_Hunters
         {
             board.DisplayBoard(board.grid, Player1, Player2, this);
             CurrentTurn = Player1;
-            int TotalTurns = 0;
+            //have to start from TotalTurns=1 to correctly display decrementing moves in console while playing the game
+            TotalTurns = 1;
             while (!IsGameOver(Player1, Player2, TotalTurns))
             {
                 GetTurn(CurrentTurn, this);
@@ -89,7 +90,8 @@ namespace Gem_Hunters
 
         public bool IsGameOver(Player Player1, Player Player2, int totalMoves)
         {
-            int maxTurns = 30;
+            //maxTurns=31 - so the game have exactly 30 moves as we start from 1
+            int maxTurns = 31;
             int totalGems = 11;
             if (maxTurns <= totalMoves || Player1.GemCount >= totalGems || Player2.GemCount >= totalGems || board.CountRemainingGems() == 0)
             {

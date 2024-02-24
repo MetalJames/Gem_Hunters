@@ -53,6 +53,9 @@ namespace Gem_Hunters
             Console.WriteLine($"{game.P2Name} Gems: {Player2.GemCount}");
             Console.WriteLine();
             Console.WriteLine($"Remaining Gems: {CountRemainingGems()}");
+            int MaxMoves = 30;
+            int remainingMoves = MaxMoves - game.TotalTurns;
+            Console.WriteLine($"Remaining moves: {remainingMoves}");
         }
         public bool IsValidMove(Player player, char direction)
         {
