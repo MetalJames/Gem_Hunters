@@ -1,1 +1,1 @@
-[go]([GEM HUNTERS](https://www.youtube.com/watch?v=zpvW23TfwEQ)https://www.youtube.com/watch?v=zpvW23TfwEQ){:target="_blank" rel="noopener"}
+[![Gem Hunters](http://img.youtube.com/vi/i8_ssQm-79c/0.jpg)](javascript:void(window.open('https://www.youtube.com/watch?v=i8_ssQm-79c','_blank')))
